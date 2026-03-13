@@ -188,7 +188,8 @@ Little endian: \x28\x99\x04\x08
 First argument payload "A"*20 + "\x28\x99\x04\x08" This overwrites: node2->buffer = puts@GOT
 
 
-Second argument payload
+Second argument payloadq
+
 
 Second strcpy will write: argv[2] → node2->buffer
 But we changed the pointer to: puts@GOT

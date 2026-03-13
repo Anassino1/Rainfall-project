@@ -1,9 +1,21 @@
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <time.h>
+
 main function
 
 struct node {
     int value;
     char *buffer;
 };
+
+char	c[68];
+
+void	m(void)
+{
+	printf("%s - %d\n", c, (int)time(0));
+}
 
 int main(int ac, char **av)
 {

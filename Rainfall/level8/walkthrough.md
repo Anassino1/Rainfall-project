@@ -105,13 +105,13 @@ ECX = length
 
 So the program is doing something like:
 
-strncmp(input, "?????", 5)    5 HOOOOOW
+strncmp(input, "?????", 5)
 
 5) Find the string being compared
 
 mov $0x8048819,%eax
 
-That means: EDI = 0x8048819    HOOOOOOW
+That means: EDI = 0x8048819
 
 So the string is stored at address: 0x8048819
 
@@ -325,6 +325,19 @@ Distance:
 0x804a028 - 0x804a018 = 0x10 = 16 bytes
 
 So auth+32 is 16 bytes inside the service string.
+
+
+Counting from auth (user pointer = 0x804a010):
+
+auth + 0  → first byte of auth
+auth + 1  → ...
+auth + 4  → heap metadata of next chunk (approx)
+auth + 12 → more metadata
+auth + 32 → somewhere inside service’s user data
+
+That’s why filling service with 32+ bytes of 'A' will overwrite auth[32].
+
+
 
 Solution
 --------

